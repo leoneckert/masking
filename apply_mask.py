@@ -121,20 +121,20 @@ def assert_dir(dir_path):
         potential_out_dir = "_".join( potential_out_dir.split("_")[:-1] ) +  "_" + str(idx)  
     out_dir = potential_out_dir
     os.mkdir(out_dir)
-    print "[+] Created " + out_dir + ". and will save output to that directory" 
+    print("[+] Created " + out_dir + ". and will save output to that directory") 
     return out_dir
 
 def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
             
-    print "[+] Applying mask(s)" 
+    print("[+] Applying mask(s)") 
     for j, path in enumerate(input_paths, 0):
-        print "\n\t[+] Opening", path
+        print("\n\t[+] Opening", path)
         img = get_img(path)
     
         # find all faces
         faces = get_rects(img)
         if len(faces) == 0:
-            print "\t[-] no faces found"
+            print("\t[-] no faces found")
             if is_video == True:
                 temp_dir = "/".join( path.split("/")[:-1]) 
                 f = path.split("/")[-1]
@@ -142,10 +142,10 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
                 if not os.path.isdir(temp_out):
                     os.mkdir(temp_out)
                 output_path = os.path.join( temp_out, f) 
-                print "\t[+] Saving as", output_path
+                print("\t[+] Saving as", output_path)
                 cv2.imwrite(output_path, img)
             continue
-        print "\t[+] Found", len(faces), "faces"
+        print("\t[+] Found", len(faces), "faces")
         out = img.copy()
 
         #sort faces by size, start with the smallest
@@ -153,14 +153,14 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
         
         masks_not_used = masks.copy()
         for i, face in enumerate(faces, 0):
-            print "\t\t[face " + str(i+1) + "]", 
+            print("\t\t[face " + str(i+1) + "]", end=' ') 
             # pick a random mask, check if unique mask was selected 
             mask_name, mask_front, mask_back, masks_not_used = get_random_mask(masks, masks_not_used, apply_unique_masks)
             if mask_name == None:
-                print "already used all masks once (you specified '-u' unique mask use)"
+                print("already used all masks once (you specified '-u' unique mask use)")
                 continue
             
-            print "picked mask", mask_name
+            print("picked mask", mask_name)
             mask_face = get_rects(mask_back)[0]
 
             #get landmarks
@@ -176,12 +176,12 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
             try:
                 for c in range(0,3):
                     out[0:out.shape[0],0:out.shape[1], c] =  aligned_mask[:,:,c] * (aligned_mask[:,:,3]/255.0) +  out[0:out.shape[0], 0:out.shape[1], c] * (1.0 - aligned_mask[:,:,3]/255.0)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 pass
         
         if not is_video:
-            print "\t[+] Saving as", output_paths[j] 
+            print("\t[+] Saving as", output_paths[j]) 
             cv2.imwrite(output_paths[j], out)
         else:
             temp_dir = "/".join( path.split("/")[:-1]) 
@@ -190,7 +190,7 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
             if not os.path.isdir(temp_out):
                 os.mkdir(temp_out)
             output_path = os.path.join( temp_out, f) 
-            print "\t[+] Saving as", output_path
+            print("\t[+] Saving as", output_path)
             cv2.imwrite(output_path, out)
         
     if is_video == True:
@@ -198,12 +198,12 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
         f = path.split("/")[-1]
         temp_out = temp_dir + "_masked"
         
-        print "[+] Combining frames to video"
-        print """
+        print("[+] Combining frames to video")
+        print("""
         This uses ffmpeg, which you hopefully have installed.
         Also not sound supported yet.... would be a few changes in the ffmpeg commands,
         but I thought it was fine for now.
-        """
+        """)
         fps = '25'
         if os.path.isfile( os.path.join(temp_dir, "fps.txt")):
             fps = open( os.path.join( temp_dir, "fps.txt")).read().strip()
@@ -215,11 +215,11 @@ def apply_masks(input_paths, masks, output_paths, apply_unique_masks, is_video):
             subprocess.call(["ffmpeg",  "-i", os.path.join(temp_out,"video.mp4"), "-i",  os.path.join(temp_dir, "sound.aac"), "-c:v", "copy", "-c:a", "aac", "-strict", "experimental", "-r", fps, output_paths[0]  ])
         else:
             shutil.move( os.path.join(temp_out, "video.mp4"), output_paths[0])
-        print "\t[+] Cleaning up after myself"
+        print("\t[+] Cleaning up after myself")
         
         shutil.rmtree(temp_dir)
         shutil.rmtree(temp_out)
-        print "\t[+] Saving as", output_paths[0]
+        print("\t[+] Saving as", output_paths[0])
 
 
 

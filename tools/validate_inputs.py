@@ -17,11 +17,11 @@ def load_masks(the_dir):
                         "back": os.path.join( the_dir, ff)
                         }
     if no_matches == True:
-        print "[-] Exiting program"
-        print """
+        print("[-] Exiting program")
+        print("""
         Could not find valid mask pairs in: """ + the_dir + """
         For more information on file naming check the github repo.
-        """
+        """)
         sys.exit()
     return masks
         
@@ -29,7 +29,7 @@ def load_masks(the_dir):
 
 def run(args):
     # deal with input:
-    print "[+] Inspecting input"
+    print("[+] Inspecting input")
     input_paths = list()
     is_video = False
     in_arg = args.input
@@ -40,12 +40,12 @@ def run(args):
         if ext in img_extensions:
             input_paths.append(in_arg) 
         elif ext in vid_extensions:
-            print "[+] Extracting frames from video."
-            print """
+            print("[+] Extracting frames from video.")
+            print("""
             Trying to extract frames from video using ffmpeg. If you
             don't have ffmpeg installed, this will throw some error I did not
             accomodate for in this script :)
-            """
+            """)
             is_video = True
             temp_dir = "temp_0"
             while os.path.isdir(temp_dir):
@@ -68,14 +68,14 @@ def run(args):
                     input_paths.append( os.path.join(temp_dir, f) )
             
         else:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             Sorry, the extension of you input file is not recognised.
             This doesn't mean your file isn't valid, but that you have to
             change either the file extension or the source code to test it.
             Currently support image extensions: """ + str(list(img_extensions)) + """
             Currently support video extensions: """ + str(list(vid_extensions)) + """
-            """
+            """)
             sys.exit()
     elif os.path.isdir(in_arg):
         for f in os.listdir(in_arg):
@@ -83,25 +83,25 @@ def run(args):
             if ext in img_extensions:
                 input_paths.append( os.path.join(in_arg, f) )
         if len(input_paths) < 1:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             No images found in """ + in_arg + """
             Right now not supporting more than one video at once, can be
             changed in the source code though. 
-            """
+            """)
             sys.exit()
     else:
-        print "[-] Exiting program"
-        print """
+        print("[-] Exiting program")
+        print("""
         Cannot find your input: """ + in_arg + """
-        """
+        """)
         sys.exit()
             
-    print "[+] Inspecting input: Done."
+    print("[+] Inspecting input: Done.")
     
     # deal with masks:
     masks = dict()
-    print "[+] Inspecting masks"
+    print("[+] Inspecting masks")
     ma_arg = args.mask
     if os.path.isdir(ma_arg):
         masks = load_masks(ma_arg)
@@ -124,18 +124,18 @@ def run(args):
                             "back": ff_path
                             }
                 else:
-                    print "[-] Exiting program"
-                    print """
+                    print("[-] Exiting program")
+                    print("""
                     You specified file: """ + ma_arg + """
                     Cannot find corresponding file: """ + ff_path + """
-                    """
+                    """)
                     sys.exit()
             else:
-                print "[-] Exiting program"
-                print """
+                print("[-] Exiting program")
+                print("""
                 The file you specified for the mask seems not be named
                 correctly. For more Information check the documentation on my github.
-                """
+                """)
                 sys.exit()
         elif f_ext == ".jpg":
             spec = f_name.split("_")[-1]
@@ -150,55 +150,55 @@ def run(args):
                             "back": ma_arg
                             }
                 else:
-                    print "[-] Exiting program"
-                    print """
+                    print("[-] Exiting program")
+                    print("""
                     You specified file: """ + ma_arg + """
                     Cannot find correspoding file: """ + ff_path + """
-                    """
+                    """)
                     sys.exit()
             else:
-                print "[-] Exiting program"
-                print """
+                print("[-] Exiting program")
+                print("""
                 The file you specified for the mask seems not be named
                 correctly. For more Information check the documentation on my github.
-                """
+                """)
                 sys.exit()
         else:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             The file you specified for the mask has to be either a .png or
             .jpg. For more Information check the documentation on my github.
-            """
+            """)
             sys.exit()
     else:
-        print "[-] Exiting program"
-        print """
+        print("[-] Exiting program")
+        print("""
         Cannot find a masks at: """ + ma_arg + """
-        """
+        """)
         sys.exit()
 
-    print "[+] Inspecting masks: Done."
+    print("[+] Inspecting masks: Done.")
 
     # Deal with the outout paths:
-    print "[+] Validating output paths"
+    print("[+] Validating output paths")
     output_paths = [] 
     out_arg = args.output
     #check if actual filename is specified:
     potential_ext = "." + out_arg.split(".")[-1] 
     if potential_ext in img_extensions:
         if is_video == True:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             The input you specified is a video, the output filename specifies
             an image.
-            """
+            """)
             sys.exit()
         elif len(input_paths) > 1:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             You specified multiple input images, but only specified one single
             output filename.
-            """
+            """)
             sys.exit()
         else:
             path = "/".join(out_arg.split("/")[:-1])
@@ -208,11 +208,11 @@ def run(args):
 
     elif potential_ext in vid_extensions:
         if is_video == False:
-            print "[-] Exiting program"
-            print """
+            print("[-] Exiting program")
+            print("""
             The input you specified is one or more images, the output filename specifies
             a video.
-            """
+            """)
             sys.exit()
         else:
             path = "/".join(out_arg.split("/")[:-1])
@@ -237,5 +237,5 @@ def run(args):
             f_out = f_name + "_masked" + f_ext
             out_p = os.path.join(out_arg, f_out)
             output_paths.append(out_p)
-    print "[+] Validating output paths: Done."
+    print("[+] Validating output paths: Done.")
     return input_paths, masks, output_paths, args.unique, is_video
