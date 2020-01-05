@@ -36,7 +36,7 @@ def run(args):
     img_extensions = set([".jpg", ".jpeg", ".tif", ".png", ".tiff", ".gif"])
     vid_extensions = set([".mp4", ".mov"])
     if os.path.isfile(in_arg):
-        ext = "." + in_arg.split(".")[-1]
+        ext = ("." + in_arg.split(".")[-1]).lower()
         if ext in img_extensions:
             input_paths.append(in_arg) 
         elif ext in vid_extensions:
@@ -79,7 +79,7 @@ def run(args):
             sys.exit()
     elif os.path.isdir(in_arg):
         for f in os.listdir(in_arg):
-            ext = "." + f.split(".")[-1]
+            ext = ("." + f.split(".")[-1]).lower()
             if ext in img_extensions:
                 input_paths.append( os.path.join(in_arg, f) )
         if len(input_paths) < 1:
@@ -184,7 +184,7 @@ def run(args):
     output_paths = [] 
     out_arg = args.output
     #check if actual filename is specified:
-    potential_ext = "." + out_arg.split(".")[-1] 
+    potential_ext = ("." + out_arg.split(".")[-1]).lower()
     if potential_ext in img_extensions:
         if is_video == True:
             print "[-] Exiting program"
