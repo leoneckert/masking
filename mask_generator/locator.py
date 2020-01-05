@@ -42,9 +42,9 @@ def face_points(img, add_boundary_points=True):
   stasm_platform = SUPPORTED_PLATFORMS.get(sys.platform)
   cv_major = cvver.major()
   if stasm_platform is None:
-    print(sys.platform + ' version of stasm_util is currently not supported.')
-    print('You can try building `stasm_util_{0}_cv{1}` and add to `bin`'.format(
-      sys.platform, cv_major))
+    print((sys.platform + ' version of stasm_util is currently not supported.'))
+    print(('You can try building `stasm_util_{0}_cv{1}` and add to `bin`'.format(
+      sys.platform, cv_major)))
     sys.exit()
 
   stasm_path = path.join(
@@ -93,4 +93,4 @@ def weighted_average_points(start_points, end_points, percent=0.5):
     return np.asarray(start_points*percent + end_points*(1-percent), np.int32)
 
 if __name__ == "__main__":
-    print(face_points(sys.argv[1]))
+    print((face_points(sys.argv[1])))

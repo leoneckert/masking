@@ -20,12 +20,12 @@ def add_margin_to_image(img, factor=1):
 
 
 def get_img(path):
-    print "[+] Opened image from:", path
+    print("[+] Opened image from:", path)
     return cv2.imread(path)
 
 def get_rects(img):
     rects = detector(img)
-    print "\t[+] Number of faces found:", len(rects)
+    print("\t[+] Number of faces found:", len(rects))
     return rects
 
 def assert_dir(dir_path):
@@ -39,7 +39,7 @@ def assert_dir(dir_path):
         potential_out_dir = "_".join( potential_out_dir.split("_")[:-1] ) +  "_" + str(idx)  
     out_dir = potential_out_dir
     os.mkdir(out_dir)
-    print "[+] Created " + out_dir + ". and will save output to that directory" 
+    print("[+] Created " + out_dir + ". and will save output to that directory") 
     return out_dir
 
 def cut_face_with_margin(img, rect, margin_factor=0):
@@ -51,7 +51,7 @@ def cut_face_with_margin(img, rect, margin_factor=0):
     return img[y:y+h,x:x+w]
 
 def make_masks(input_paths, output_info): 
-    print "[+] Creating masks"
+    print("[+] Creating masks")
     # for each image, get all faces
     mask_count = 0
     for img_path in input_paths:
@@ -61,7 +61,7 @@ def make_masks(input_paths, output_info):
         # find all faces
         faces = get_rects(img)
         if len(faces) == 0:
-            print "no faces found"
+            print("no faces found")
             return
         
         output_paths = list()
@@ -108,18 +108,18 @@ def make_masks(input_paths, output_info):
                 mask = make_mask.make_mask(face_img)
 
                 if str(type(mask)) != "<type 'numpy.ndarray'>":
-                    print "\t\t[-] Trouble with finding a mask for face", str(i), "unfortunately"
-                    print "\t\t\tFYI, this is because I am using two different face detection algorithms....." 
+                    print("\t\t[-] Trouble with finding a mask for face", str(i), "unfortunately")
+                    print("\t\t\tFYI, this is because I am using two different face detection algorithms.....") 
                 else:
                     cv2.imwrite( output_paths[i]["back"], face_img)
                     cv2.imwrite( output_paths[i]["front"], mask)
-                    print "\t\t[+] Saved mask files for face", str(i) 
-            except Exception, e:
-                print "error with image:", img_path, "\nerror:", e
+                    print("\t\t[+] Saved mask files for face", str(i)) 
+            except Exception as e:
+                print("error with image:", img_path, "\nerror:", e)
                 pass
         
 
-    print "\n\n[+] Saved new masks to:", output_info["base"]    
+    print("\n\n[+] Saved new masks to:", output_info["base"])    
 
 
 
@@ -135,8 +135,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     input_paths, output_info = validate_create_mask_input.run(args)
-    print "input_paths", input_paths
-    print "output_info", output_info
+    print("input_paths", input_paths)
+    print("output_info", output_info)
 
     make_masks(input_paths, output_info)
 
